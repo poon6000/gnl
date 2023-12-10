@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:18 by nsangnga          #+#    #+#             */
-/*   Updated: 2023/11/26 18:06:43 by nsangnga         ###   ########.fr       */
+/*   Updated: 2023/12/08 11:35:32 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,20 @@
 # include <stdio.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIE 42
+#  define BUFFER_SIZE 42
 # endif
 
-typedef struct s_list
+typedef struct s_gnl
 {
-	char			*node_content;
-	struct s_list	*next;
-}	t_list;
+	int				fd;
+	char			*content;
+	struct s_gnl	*next;
+}	t_gnl;
 
 char	*get_next_line(int fd);
+size_t	ft_strlen_gnl(const char *s);
+char	*ft_strdup_gnl(const char *s);
+char	*ft_strjoin_gnl(const char *s1, const char *s2);
+char	*ft_strchr_gnl(const char *s, int c);
 
 #endif
