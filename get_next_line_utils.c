@@ -6,11 +6,32 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:36:50 by nsangnga          #+#    #+#             */
-/*   Updated: 2023/12/06 16:30:22 by intrauser        ###   ########.fr       */
+/*   Updated: 2023/12/14 17:43:35 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+void	append_to_list(t_gnl **list, char *content)
+{
+	t_gnl	*new_node;
+	t_gnl	*last_node;
+
+	new_node = (t_gnl *)malloc(sizeof(t_gnl));
+	if (!new_node)
+		return ;
+	new_node->content = content;
+	new_node->next = NULL;
+	if (*list == NULL)
+		*list = new_node;
+	else
+	{
+		last_node = *list;
+		while (last_node->next != NULL)
+			last_node = last_node->next;
+		last_node->next = new_node;
+	}
+}
 
 size_t	ft_strlen_gnl(const char *s)
 {
@@ -33,7 +54,7 @@ char	*ft_strdup_gnl(const char *s)
 	if (!dup)
 		return (NULL);
 	i = 0;
-	while (i < len)
+	while (i < len - 1)
 	{
 		dup[i] = s[i];
 		i++;
@@ -42,43 +63,33 @@ char	*ft_strdup_gnl(const char *s)
 	return (dup);
 }
 
-char	*ft_strjoin_gnl(const char *s1, const char *s2)
+int	find_newline_in_list(t_gnl *list)
 {
-	char	*new_str;
-	size_t	s1_len;
-	size_t	s2_len;
-	size_t	i;
+	char	*current_content;
 
-	s1_len = ft_strlen_gnl(s1);
-	s2_len = ft_strlen_gnl(s2);
-	new_str = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1));
-	if (!new_str)
-		return (NULL);
-	i = 0;
-	while (i < s1_len)
+	while (list)
 	{
-		new_str[i] = s1[i];
-		i++;
+		current_content = list->content;
+		while (current_content && *current_content)
+		{
+			if (*current_content == '\n')
+				return (1);
+			current_content++;
+		}
+		list = list->next;
 	}
-	i = 0;
-	while (i < s2_len)
-	{
-		new_str[s1_len + 1] = s2[i];
-		i++;
-	}
-	new_str[s1_len + s2_len] = '\0';
-	return (new_str);
+	return (0);
 }
 
-char	*ft_strchr_gnl(const char *s, int c)
+size_t	get_list_length(t_gnl *list)
 {
-	while (s && *s)
+	size_t	length;
+
+	length = 0;
+	while (list)
 	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
+		length += ft_strlen_gnl(list->content);
+		list = list->next;
 	}
-	if (!(char)c)
-		return ((char *)s);
-	return (NULL);
+	return (length);
 }

@@ -1,0 +1,5 @@
+Hello, World!
+
+Welcome to get_next_line testing.
+
+This is a simple file.

@@ -6,139 +6,106 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:03 by nsangnga          #+#    #+#             */
-/*   Updated: 2023/12/08 11:36:09 by intrauser        ###   ########.fr       */
+/*   Updated: 2023/12/14 17:46:08 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*update_buffer(char *buffer, char *addition)
+void	free_list(t_gnl **list)
 {
-	char	*new_buffer;
+	t_gnl	*temp;
 
-	new_buffer = ft_strjoin_gnl(buffer, addition);
-	free(buffer);
-	return (new_buffer);
+	while (*list)
+	{
+		temp = *list;
+		*list = (*list)->next;
+		free(temp->content);
+		free(temp);
+	}
 }
 
-int	read_and_store(int fd, char **buffer)
+void	copy_list_to_string(t_gnl *list, char *str)
 {
-	char	read_buffer[BUFFER_SIZE + 1];
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	while (list)
+	{
+		j = 0;
+		while (list->content[j])
+		{
+			str[i++] = list->content[j++];
+		}
+		list = list->next;
+	}
+	str[i] = '\0';
+}
+
+char	*extract_line_from_list(t_gnl **list)
+{
+	size_t	len;
+	char	*line;
+	t_gnl	*temp;
+
+	len = get_list_length(*list);
+	line = (char *)malloc(sizeof(char) * (len + 1));
+	if (!line)
+		return (NULL);
+	copy_list_to_string(*list, line);
+	while (*list && !find_newline_in_list(*list))
+	{
+		temp = *list;
+		*list = (*list)->next;
+		free(temp->content);
+		free(temp);
+	}
+	return (line);
+}
+
+int	read_from_fd_to_list(int fd, t_gnl **list)
+{
+	char	*buffer;
 	ssize_t	bytes_read;
+	int		result;
 
-	while (1)
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (-1);
+	bytes_read = read(fd, buffer, BUFFER_SIZE);
+	while (bytes_read > 0)
 	{
-		bytes_read = read(fd, read_buffer, BUFFER_SIZE);
-		if (bytes_read <= 0)
-			return (bytes_read);
-
-		read_buffer[bytes_read] = '\0';
-		*buffer = update_buffer(*buffer, read_buffer);
-		if (!*buffer)
-			return (-1);
-
-		if (ft_strchr_gnl(read_buffer, '\n'))
+		buffer[bytes_read] = '\0';
+		append_to_list(list, ft_strdup_gnl(buffer));
+		if (find_newline_in_list(*list))
 			break ;
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
 	}
-	return (bytes_read);
+	if (bytes_read > 0)
+		result = 1;
+	else if (bytes_read == 0)
+		return (0);
+	else
+		result = -1;
+	free(buffer);
+	return (result);
 }
 
-
-t_gnl	*get_fd_node(t_gnl **head, int fd)
+char	*get_next_line(int fd)
 {
-	t_gnl	*tmp;
+	static t_gnl	*list = NULL;
+	char			*line;
 
-	if (!head)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	tmp = *head;
-	while (tmp)
+	if (read_from_fd_to_list(fd, &list) == -1)
+		return (NULL);
+	line = extract_line_from_list(&list);
+	if (!line || !*line)
 	{
-		if (tmp->fd == fd)
-			return (tmp);
-		tmp = tmp->next;
-	}
-	tmp = (t_gnl *)malloc(sizeof(t_gnl));
-	if (!tmp)
+		free_list(&list);
 		return (NULL);
-	tmp->fd = fd;
-	tmp->content = NULL;
-	tmp->next = *head;
-	*head = tmp;
-	return (tmp);
+	}
+	return (line);
 }
-
-// t_list	*ft_create_new_node(void)
-// {
-// 	t_list	*new_node;
-
-// 	new_node = (t_list *)malloc(sizeof(t_list));
-// 	if (!new_node)
-// 		return (NULL);
-// 	new_node->node_content = NULL;
-// 	new_node->next = NULL;
-// 	return (new_node);
-// }
-
-// void	ft_listadd_back(t_list **head, t_list *new_node)
-// {
-// 	t_list	*temp;
-
-// 	if (!head || !new_node)
-// 		return ;
-// 	if (*head == NULL)
-// 	{
-// 		*head = new_node;
-// 		return ;
-// 	}
-// 	temp = *head;
-// 	while (temp->next)
-// 		temp = temp->next;
-// 	temp->next = new_node;
-// }
-
-// void	free_linked_list(t_list **head)
-// {
-// 	t_list	*temp;
-// 	t_list	*next_node;
-
-// 	if (!head || !*head)
-// 		return ;
-// 	temp = *head;
-// 	while (temp)
-// 	{
-// 		next_node = temp->next;
-// 		free(temp->node_content);
-// 		free(temp);
-// 		temp = next_node;
-// 	}
-// 	*head = NULL;
-// }
-
-// char	*get_next_line(int fd)
-// {
-// 	static t_list	*head = NULL;
-// 	char			buffer[BUFFER_SIZE + 1];
-// 	ssize_t			bytes_read;
-// 	char			*next_line;
-
-// 	if (fd < 0 || BUFFER_SIE <= 0 || read(fd, &next_line, 0) < 0)
-// 		return (NULL);
-// 	if (!head)
-// 		head = ft_create_new_node();
-// 	while (1)
-// 	{
-// 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-// 		if (bytes_read < 0)
-// 			return (NULL);
-// 		buffer[bytes_read] = '\0';
-// 		append_buffer_to_list(&head, buffer);
-// 		// Additional logic for appending buffer to linked list goes here
-//         // Check if buffer contains a newline character
-// 		if (newline_found_in_buffer_or_EOF(buffer) || bytes_read < BUFFER_SIZE)
-// 			break ;
-// 	}
-// 	line = extract_line_from_list(&head);  // Function to extract the line from the linked list
-// 	cleanup_list(&head); // Function to cleanup or rearrange the linked list
-
-// 	return (line);
-// }

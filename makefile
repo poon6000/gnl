@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+         #
+#    By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 13:18:14 by nsangnga          #+#    #+#              #
-#    Updated: 2023/11/26 17:59:53 by nsangnga         ###   ########.fr        #
+#    Updated: 2023/12/12 15:26:02 by intrauser        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ BUFFER_SIZE = 42
 SRCS = get_next_line.c get_next_line_utils.c main.c
 OBJS = $(SRCS:.c=.o)
 
-FILE_TEST = file.txt
+FILE_TEST = test.txt
 
 %.o: %.c
 	@echo "Compiling $<"
