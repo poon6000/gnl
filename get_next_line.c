@@ -6,7 +6,7 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:03 by nsangnga          #+#    #+#             */
-/*   Updated: 2023/12/14 17:46:08 by intrauser        ###   ########.fr       */
+/*   Updated: 2023/12/18 14:03:58 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,22 @@ char	*extract_line_from_list(t_gnl **list)
 	char	*line;
 	t_gnl	*temp;
 
+	if (!list)
+		return (NULL);
 	len = get_list_length(*list);
 	line = (char *)malloc(sizeof(char) * (len + 1));
 	if (!line)
 		return (NULL);
-	copy_list_to_string(*list, line);
-	while (*list && !find_newline_in_list(*list))
+	while (*list)
 	{
 		temp = *list;
 		*list = (*list)->next;
+		if (find_newline_in_list(temp))
+		{
+			free(temp->content);
+			free(temp);
+			break ;
+		}
 		free(temp->content);
 		free(temp);
 	}
@@ -85,7 +92,10 @@ int	read_from_fd_to_list(int fd, t_gnl **list)
 	if (bytes_read > 0)
 		result = 1;
 	else if (bytes_read == 0)
+	{
+		free(buffer);
 		return (0);
+	}
 	else
 		result = -1;
 	free(buffer);
