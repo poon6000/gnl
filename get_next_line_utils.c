@@ -6,71 +6,48 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:36:50 by nsangnga          #+#    #+#             */
-/*   Updated: 2023/12/14 17:43:35 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/03 22:31:29 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	append_to_list(t_gnl **list, char *content)
+t_gnl	*ft_find_last_node(t_gnl *list)
+{
+	if (!list)
+		return (NULL);
+	while (list->next)
+		list = list->next;
+	return (list);
+}
+
+void	append_buffer(t_gnl **list, char *buf)
 {
 	t_gnl	*new_node;
 	t_gnl	*last_node;
 
+	last_node = ft_find_last_node(*list);
 	new_node = (t_gnl *)malloc(sizeof(t_gnl));
 	if (!new_node)
 		return ;
-	new_node->content = content;
-	new_node->next = NULL;
-	if (*list == NULL)
+	if (!*list)
 		*list = new_node;
 	else
-	{
-		last_node = *list;
-		while (last_node->next != NULL)
-			last_node = last_node->next;
 		last_node->next = new_node;
-	}
+	new_node->content = buf;
+	new_node->next = NULL;
 }
 
-size_t	ft_strlen_gnl(const char *s)
-{
-	size_t	len;
-
-	len = 0;
-	while (*s++)
-		len++;
-	return (len);
-}
-
-char	*ft_strdup_gnl(const char *s)
-{
-	char	*dup;
-	size_t	len;
-	size_t	i;
-
-	len = ft_strlen_gnl(s) + 1;
-	dup = (char *)malloc(sizeof(char) * len);
-	if (!dup)
-		return (NULL);
-	i = 0;
-	while (i < len - 1)
-	{
-		dup[i] = s[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
-}
-
-int	find_newline_in_list(t_gnl *list)
+int	contains_newline(t_gnl *list)
 {
 	char	*current_content;
 
+	if (!list)
+		return (0);
 	while (list)
 	{
 		current_content = list->content;
-		while (current_content && *current_content)
+		while (*current_content != '\0')
 		{
 			if (*current_content == '\n')
 				return (1);
@@ -81,15 +58,16 @@ int	find_newline_in_list(t_gnl *list)
 	return (0);
 }
 
-size_t	get_list_length(t_gnl *list)
+void	free_list(t_gnl *list)
 {
-	size_t	length;
+	t_gnl	*temp;
 
-	length = 0;
 	while (list)
 	{
-		length += ft_strlen_gnl(list->content);
-		list = list->next;
+		temp = list->next;
+		free(list->content);
+		free(list);
+		list = temp;
 	}
-	return (length);
 }
+

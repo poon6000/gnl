@@ -1,5 +1,6 @@
-Hello, World!
+line 1 Lorem ipsum dolor accumsan.
 
-Welcome to get_next_line testing.
-
-This is a simple file.
+line 2 Nunc  imperdiet elit.
+line 3 Etiam e Cras eget urna leo.
+line 4 Morbi vitae lectus commodo eu.
+line 5 Donec a volutpat at consectetur lacus.

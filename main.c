@@ -6,88 +6,125 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 15:18:22 by intrauser         #+#    #+#             */
-/*   Updated: 2023/12/18 14:13:29 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/03 22:15:59 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>  // For open()
+#include <unistd.h> // For read()
 
-// int	main(void)
-// 	{
-// 	int		fd = open("test.txt", O_RDONLY);
+// int	main(int argc, char **argv)
+// {
+// 	int		fd;
 // 	char	*line;
 
-// 	while ((line = get_next_line(fd)) != NULL)
+// 	(void)argc;
+// 	fd = open(argv[1], O_RDONLY);
+// 	while ((line = get_next_line(fd)))
 // 	{
 // 		printf("%s", line);
 // 		free(line);
 // 	}
-
-// 	close(fd);
 // 	return (0);
-// 	}
+// }
 
-// #include <stdio.h>
-
-// int main() {
+//check append_buffer function
+// int main()
+// {
 //     t_gnl *list = NULL;
 
-//     // Manually append lines to the list
-//     append_to_list(&list, ft_strdup_gnl("Hello, World!\n"));
-//     append_to_list(&list, ft_strdup_gnl("Welcome to get_next_line testing.\n"));
-//     append_to_list(&list, ft_strdup_gnl("This is a simple file."));
+//     append_buffer(&list, "First line\n");
+//     append_buffer(&list, "Second line\n");
+//     append_buffer(&list, "Third line\n");
 
-//     // Extract the first line from the list
-//     char *extracted_line = extract_line_from_list(&list);
-//     if (extracted_line) {
-//         printf("Extracted Line: %s\n", extracted_line);
-//         free(extracted_line);
+//     // Print the list
+//     t_gnl *current = list;
+//     while (current != NULL)
+//     {
+//         printf("%s", current->content);
+//         current = current->next;
 //     }
 
-//     // Free the remaining list
-//     free_list(&list);
+//     // Free the list
+//     while (list != NULL)
+//     {
+//         t_gnl *temp = list;
+//         list = list->next;
+//         free(temp);
+//     }
+
 //     return 0;
 // }
 
-#include "get_next_line.h"
-#include <fcntl.h>
-#include <stdio.h>
+//check contains_newline function
+// int main()
+// {
+//     // Test case 1: List with a string that contains a newline
+//     t_gnl *test1 = (t_gnl *)malloc(sizeof(t_gnl));
+//     test1->content = "Line with newline\n";
+//     test1->next = NULL;
+//     printf("Test 1 - Should find a newline: %s\n", contains_newline(test1) ? "Passed" : "Failed");
 
-int main() {
-    int fd;
+//     // Test case 2: List with a string that does not contain a newline
+//     t_gnl *test2 = (t_gnl *)malloc(sizeof(t_gnl));
+//     test2->content = "Line without newline";
+//     test2->next = NULL;
+//     printf("Test 2 - Should not find a newline: %s\n", contains_newline(test2) ? "Failed" : "Passed");
+
+//     // Test case 3: List with multiple nodes, newline in second node
+//     t_gnl *test3 = (t_gnl *)malloc(sizeof(t_gnl));
+//     test3->content = "First line";
+//     test3->next = (t_gnl *)malloc(sizeof(t_gnl));
+//     test3->next->content = "Second line with newline\n";
+//     test3->next->next = NULL;
+//     printf("Test 3 - Should find a newline in second node: %s\n", contains_newline(test3) ? "Passed" : "Failed");
+
+//     // Free allocated memory
+//     free(test1);
+//     free(test2);
+//     free(test3->next);
+//     free(test3);
+
+//     return 0;
+// }
+
+void print_and_free_list(t_gnl *list)
+{
+    while (list)
+    {
+        printf("%s", list->content);
+        t_gnl *temp = list;
+        list = list->next;
+        free(temp->content);
+        free(temp);
+    }
+}
+
+int main(int argc, char **argv)
+{
+    int    fd;
     t_gnl *list = NULL;
 
-    // Open a file
-    fd = open("test.txt", O_RDONLY); // Replace "test.txt" with your test file path
-    if (fd == -1) {
-        printf("Error opening file\n");
+    if (argc != 2)
+    {
+        printf("Usage: %s test.txt\n", argv[0]);
         return 1;
     }
 
-    // Read from file to list
-    if (read_from_fd_to_list(fd, &list) == -1) {
-        printf("Error reading from file\n");
-        close(fd);
+    fd = open(argv[1], O_RDONLY);
+    if (fd == -1)
+    {
+        perror("Error opening file");
         return 1;
     }
 
-    // Print the contents of the list for debugging
-    t_gnl *current_node = list;
-    while (current_node != NULL) {
-        printf("Node content: '%s'\n", current_node->content);
-        current_node = current_node->next;
-    }
-
-    // Extract and print the first line from the list
-    char *extracted_line = extract_line_from_list(&list);
-    if (extracted_line) {
-        printf("Extracted Line: %s\n", extracted_line);
-        free(extracted_line);
-    }
-
-    // Free the remaining list
-    free_list(&list);
+    read_to_list(&list, fd);
     close(fd);
+
+    print_and_free_list(list);
+
     return 0;
 }

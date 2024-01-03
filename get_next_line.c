@@ -6,100 +6,40 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:03 by nsangnga          #+#    #+#             */
-/*   Updated: 2023/12/18 14:03:58 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/03 22:36:28 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	free_list(t_gnl **list)
+void	read_to_list(t_gnl **list, int fd)
 {
-	t_gnl	*temp;
+	char	buffer[BUFFER_SIZE + 1];
+	int		bytes_read;
+	char	*temp_buf;
+	int		i;
 
-	while (*list)
+	while (!contains_newline(*list))
 	{
-		temp = *list;
-		*list = (*list)->next;
-		free(temp->content);
-		free(temp);
-	}
-}
-
-void	copy_list_to_string(t_gnl *list, char *str)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	while (list)
-	{
-		j = 0;
-		while (list->content[j])
-		{
-			str[i++] = list->content[j++];
-		}
-		list = list->next;
-	}
-	str[i] = '\0';
-}
-
-char	*extract_line_from_list(t_gnl **list)
-{
-	size_t	len;
-	char	*line;
-	t_gnl	*temp;
-
-	if (!list)
-		return (NULL);
-	len = get_list_length(*list);
-	line = (char *)malloc(sizeof(char) * (len + 1));
-	if (!line)
-		return (NULL);
-	while (*list)
-	{
-		temp = *list;
-		*list = (*list)->next;
-		if (find_newline_in_list(temp))
-		{
-			free(temp->content);
-			free(temp);
-			break ;
-		}
-		free(temp->content);
-		free(temp);
-	}
-	return (line);
-}
-
-int	read_from_fd_to_list(int fd, t_gnl **list)
-{
-	char	*buffer;
-	ssize_t	bytes_read;
-	int		result;
-
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
-		return (-1);
-	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	while (bytes_read > 0)
-	{
-		buffer[bytes_read] = '\0';
-		append_to_list(list, ft_strdup_gnl(buffer));
-		if (find_newline_in_list(*list))
-			break ;
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		temp_buf = malloc(bytes_read + 1);
+		if (!temp_buf)
+		{
+			free(temp_buf);
+			return ;
+		}
+		i = 0;
+		while (i < bytes_read)
+		{
+			temp_buf[i] = buffer[i];
+			i++;
+		}
+		temp_buf[i] = '\0';
+		append_buffer(list, temp_buf);
 	}
-	if (bytes_read > 0)
-		result = 1;
-	else if (bytes_read == 0)
-	{
-		free(buffer);
-		return (0);
-	}
-	else
-		result = -1;
-	free(buffer);
-	return (result);
 }
 
 char	*get_next_line(int fd)
@@ -107,15 +47,39 @@ char	*get_next_line(int fd)
 	static t_gnl	*list = NULL;
 	char			*line;
 
+	// Check for valid file descriptor and buffer size
 	if (fd < 0 || BUFFER_SIZE <= 0)
+		return NULL;
+
+	// Read data from file descriptor into the list
+	read_to_list(&list, fd);
+	if (!list)
 		return (NULL);
-	if (read_from_fd_to_list(fd, &list) == -1)
-		return (NULL);
-	line = extract_line_from_list(&list);
-	if (!line || !*line)
-	{
-		free_list(&list);
-		return (NULL);
-	}
-	return (line);
+
+	// Extract the line from the list
+	line = extract_line(list);
+
+	// Update the list by removing the extracted line
+	update_list(&list);
+
+	return (line);  // Return the extracted line
 }
+
+
+// char	*get_next_line(int fd)
+// {
+//     static t_gnl *list = NULL;
+//     char          *line;
+
+//     if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
+//         return (NULL);
+
+//     read_to_list(&list, fd);
+//     if (!list)
+//         return (NULL);
+
+//     line = extract_line(list);
+//     update_list(&list);
+
+//     return (line);
+// }
