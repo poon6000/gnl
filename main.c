@@ -6,7 +6,7 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 15:18:22 by intrauser         #+#    #+#             */
-/*   Updated: 2024/01/04 17:59:11 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/06 23:32:56 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,25 @@
 #include <fcntl.h>  // For open()
 #include <unistd.h> // For read()
 
-// int	main(int argc, char **argv)
-// {
-// 	int		fd;
-// 	char	*line;
+int main() {
+    // Open a file for reading
+    int fd = open("test.txt", O_RDONLY);
+    if (fd < 0) {
+        perror("Error opening file");
+        return 1;
+    }
 
-// 	(void)argc;
-// 	fd = open(argv[1], O_RDONLY);
-// 	while ((line = get_next_line(fd)))
-// 	{
-// 		printf("%s", line);
-// 		free(line);
-// 	}
-// 	return (0);
-// }
+    // Read and print lines using get_next_line
+    char *line;
+    while ((line = get_next_line(fd)) != NULL) {
+        printf("%s", line);
+        free(line);  // Free the line after printing
+    }
+
+    // Close the file descriptor
+    close(fd);
+    return 0;
+}
 
 //check append_buffer function
 // int main()
@@ -59,7 +64,7 @@
 //     return 0;
 // }
 
-//check contains_newline function
+// check contains_newline function
 // int main()
 // {
 //     // Test case 1: List with a string that contains a newline
@@ -91,6 +96,7 @@
 //     return 0;
 // }
 
+//check read
 // void print_and_free_list(t_gnl *list)
 // {
 //     while (list)
@@ -103,7 +109,6 @@
 //     }
 // }
 
-//check read
 // int main(int argc, char **argv)
 // {
 //     int    fd;
@@ -131,40 +136,70 @@
 // }
 
 //check length to newline
-// 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "get_next_line.h"
+// int main()
+// {
+//     // Test 1: List with a single node containing a newline
+//     t_gnl test1;
+//     test1.content = "Hello\n";
+//     test1.next = NULL;
+//     char *line1 = extract_line(&test1);
+//     printf("Test 1 - Line: %s", line1);
+//     free(line1);
 
-int main()
-{
-    // Test 1: List with a single node containing a newline
-    t_gnl test1;
-    test1.content = "Hello\n";
-    test1.next = NULL;
-    char *line1 = extract_line(&test1);
-    printf("Test 1 - Line: %s", line1);
-    free(line1);
+//     // Test 2: List with three nodes, newline in the second node
+//     t_gnl test2a, test2b, test2c;
+//     test2a.content = "Hello ";
+//     test2a.next = &test2b;
+//     test2b.content = "World ";
+//     test2b.next = &test2c;
+// 	test2c.content = "Again!\n";
+// 	test2c.next = NULL;
+//     char *line2 = extract_line(&test2a);
+//     printf("Test 2 - Line: %s", line2);
+//     free(line2);
 
-    // Test 2: List with two nodes, newline in the second node
-    t_gnl test2a, test2b;
-    test2a.content = "Hello ";
-    test2a.next = &test2b;
-    test2b.content = "World\n";
-    test2b.next = NULL;
-    char *line2 = extract_line(&test2a);
-    printf("Test 2 - Line: %s", line2);
-    free(line2);
+//     // Test 3: List with a single node without a newline
+//     t_gnl test3;
+//     test3.content = "Hello";
+//     test3.next = NULL;
+//     char *line3 = extract_line(&test3);
+//     printf("Test 3 - Line: %s", line3);
+//     free(line3);
 
-    // Test 3: List with a single node without a newline
-    t_gnl test3;
-    test3.content = "Hello";
-    test3.next = NULL;
-    char *line3 = extract_line(&test3);
-    printf("Test 3 - Line: %s", line3);
-    free(line3);
+//     return 0;
+// }
 
-    return 0;
-}
+// check extract_line
+// int main() {
+//     // Create a simple linked list
+//     t_gnl *list = malloc(sizeof(t_gnl));
+//     t_gnl *node2 = malloc(sizeof(t_gnl));
+//     t_gnl *node3 = malloc(sizeof(t_gnl));
 
+//     // Simulate list after reading some data
+//     list->content = "Hello\n";
+//     list->next = node2;
+//     node2->content = "World\n";
+//     node2->next = node3;
+//     node3->content = "This is a test\n";
+//     node3->next = NULL;
+
+//     // Extract and print lines using ft_get_line
+//     char *line;
+//     while ((line = extract_line(list)) != NULL) {
+//         printf("%s", line);
+//         free(line);  // Free the line after printing
+//         list = list->next; // Move to the next node for next call
+//     }
+
+//     // Free the list
+//     while (list != NULL) {
+//         t_gnl *temp = list;
+//         list = list->next;
+//         free(temp->content);
+//         free(temp);
+//     }
+
+//     return 0;
+// }
