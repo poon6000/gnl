@@ -6,34 +6,30 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:36:50 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/04 17:45:29 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/04 23:04:09 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	length_to_newline(t_gnl *list)
+int	contains_newline(t_gnl *list)
 {
-	int	total_length;
-	int	node_length;
+	char	*current_content;
 
-	total_length = 0;
-	while (list != NULL)
+	if (!list)
+		return (0);
+	while (list)
 	{
-		node_length = 0;
-		while (list->content[node_length] != '\0')
+		current_content = list->content;
+		while (*current_content != '\0')
 		{
-			if (list->content[node_length] == '\n')
-			{
-				total_length += (node_length + 1);
-				return (total_length);
-			}
-			node_length++;
+			if (*current_content == '\n')
+				return (1);
+			current_content++;
 		}
-		total_length += node_length;
 		list = list->next;
 	}
-	return (total_length);
+	return (0);
 }
 
 t_gnl	*ft_find_last_node(t_gnl *list)
@@ -62,25 +58,30 @@ void	append_buffer(t_gnl **list, char *buf)
 	new_node->next = NULL;
 }
 
-int	contains_newline(t_gnl *list)
+int	length_to_newline(t_gnl *list)
 {
-	char	*current_content;
+	int	total_length;
+	int	node_length;
 
-	if (!list)
-		return (0);
-	while (list)
+	total_length = 0;
+	while (list != NULL)
 	{
-		current_content = list->content;
-		while (*current_content != '\0')
+		node_length = 0;
+		while (list->content[node_length] != '\0')
 		{
-			if (*current_content == '\n')
-				return (1);
-			current_content++;
+			if (list->content[node_length] == '\n')
+			{
+				total_length += (node_length + 1);
+				return (total_length);
+			}
+			node_length++;
 		}
+		total_length += node_length;
 		list = list->next;
 	}
-	return (0);
+	return (total_length);
 }
+
 
 void	free_list(t_gnl *list)
 {

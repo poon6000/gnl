@@ -6,11 +6,16 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:03 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/04 16:17:47 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/04 23:11:33 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+void	update_list(t_gnl **list)
+{
+	
+}
 
 char	*extract_line(t_gnl *list)
 {
@@ -68,17 +73,17 @@ void	read_to_list(t_gnl **list, int fd)
 	}
 }
 
-// char	*get_next_line(int fd)
-// {
-// 	static t_gnl	*list = NULL;
-// 	char			*line;
+char	*get_next_line(int fd)
+{
+	static t_gnl	*list = NULL;
+	char			*line;
 
-// 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
-// 		return (NULL);
-// 	read_to_list(&list, fd);
-// 	if (!list)
-// 		return (NULL);
-// 	line = extract_line(list);
-// 	update_list(&list);
-// 	return (line);
-// }
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
+		return (NULL);
+	read_to_list(&list, fd);
+	if (!list)
+		return (NULL);
+	line = extract_line(list);
+	update_list(&list);
+	return (line);
+}
