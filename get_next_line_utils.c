@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
+/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:36:50 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/07 00:18:00 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/07 19:47:05 by nsangnga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,49 @@
 
 int	contains_newline(t_gnl *list)
 {
-	char	*current_content;
+	char	*current_ptr;
 
-	if (!list)
-		return (0);
-	while (list)
+	if (list)
 	{
-		current_content = list->content;
-		while (*current_content != '\0')
+		current_ptr = list->content;
+		while (*current_ptr)
 		{
-			if (*current_content == '\n')
+			if (*current_ptr == '\n')
 				return (1);
-			current_content++;
+			current_ptr++;
 		}
-		list = list->next;
+		while (list->next)
+		{
+			list = list->next;
+			current_ptr = list->content;
+			while (*current_ptr)
+			{
+				if (*current_ptr == '\n')
+					return (1);
+				current_ptr++;
+			}
+		}
 	}
 	return (0);
 }
+// {
+// 	char	*current_content;
+
+// 	if (!list)
+// 		return (0);
+// 	while (list)
+// 	{
+// 		current_content = list->content;
+// 		while (*current_content != '\0')
+// 		{
+// 			if (*current_content == '\n')
+// 				return (1);
+// 			current_content++;
+// 		}
+// 		list = list->next;
+// 	}
+// 	return (0);
+// }
 
 void	append_buffer(t_gnl **list, char *buf)
 {
@@ -40,7 +66,11 @@ void	append_buffer(t_gnl **list, char *buf)
 	last_node = find_last_node(*list);
 	new_node = (t_gnl *)malloc(sizeof(t_gnl));
 	if (!new_node)
+	{
+		free_list(list, NULL, NULL);
+		free (buf);
 		return ;
+	}
 	if (!last_node)
 		*list = new_node;
 	else
@@ -98,8 +128,9 @@ void	ft_copy_str(t_gnl *list, char *next_str)
 			if (list->content[i] == '\n')
 			{
 				next_str[k++] = '\n';
-				next_str[k] = '\0';
-				return ;
+				// next_str[k] = '\0';
+				// return ;
+				break ;
 			}
 			next_str[k++] = list->content[i++];
 		}

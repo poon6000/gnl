@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
+/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 15:18:22 by intrauser         #+#    #+#             */
-/*   Updated: 2024/01/06 23:32:56 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/07 18:47:25 by nsangnga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,24 @@
 #include <fcntl.h>  // For open()
 #include <unistd.h> // For read()
 
-int main() {
-    // Open a file for reading
-    int fd = open("test.txt", O_RDONLY);
-    if (fd < 0) {
+int	main(void) 
+{
+    char	*line;
+    int		fd = open("test.txt", O_RDONLY);
+
+	if (fd < 0)
+	{
         perror("Error opening file");
         return 1;
     }
-
-    // Read and print lines using get_next_line
-    char *line;
-    while ((line = get_next_line(fd)) != NULL) {
-        printf("%s", line);
-        free(line);  // Free the line after printing
+	int i = 0;
+    while (i < 3)
+	{
+		line = get_next_line(fd);
+        // printf("-->%s", line);
+        free(line);
+		i++;
     }
-
-    // Close the file descriptor
     close(fd);
     return 0;
 }

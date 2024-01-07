@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+         #
+#    By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 13:18:14 by nsangnga          #+#    #+#              #
-#    Updated: 2024/01/02 23:21:11 by intrauser        ###   ########.fr        #
+#    Updated: 2024/01/07 19:20:32 by nsangnga         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
