@@ -6,7 +6,7 @@
 /*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:18 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/08 18:49:59 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/08 20:17:37 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdio.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
