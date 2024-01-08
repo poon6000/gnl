@@ -3,63 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:03 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/07 19:45:49 by nsangnga         ###   ########.fr       */
+/*   Updated: 2024/01/08 18:56:34 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	free_list(t_gnl **list, t_gnl *clean_node, char *buf)
+void	update_list_helper(t_list **list, char *buf, t_list *last_node, \
+		t_list *clean_node)
 {
-	t_gnl	*tmp;
-
-	if (!*list || !list)
-		return ;
-	while (*list)
-	{
-		tmp = (*list)->next;
-		free((*list)->content);
-		free(*list);
-		*list = tmp;
-	}
-	if (clean_node)
-	{
-		*list = NULL;
-		if (clean_node->content[0])
-			*list = clean_node;
-		else
-		{
-			free(buf);
-			free(clean_node);
-		}
-	}
-}
-
-void	update_list(t_gnl **list)
-{
-	t_gnl	*last_node;
-	t_gnl	*clean_node;
-	char	*buf;
 	int		i;
 	int		k;
 
-	buf = malloc(BUFFER_SIZE + 1);
-	if (!buf)
-	{
-		free_list (list, NULL, NULL);
-		return ;
-	}
-	clean_node = malloc(sizeof(t_gnl));
-	if (!clean_node)
-	{
-		free (buf);
-		free_list (list, NULL, NULL);
-		return ;
-	}
-	last_node = find_last_node(*list);
+	last_node = *list;
+	while (last_node && last_node->next)
+		last_node = last_node->next;
 	i = 0;
 	k = 0;
 	while (last_node->content[i] && last_node->content[i] != '\n')
@@ -72,7 +33,32 @@ void	update_list(t_gnl **list)
 	free_list(list, clean_node, buf);
 }
 
-char	*extract_line(t_gnl **list)
+void	update_list(t_list **list)
+{
+	t_list	*last_node;
+	t_list	*clean_node;
+	char	*buf;
+
+	buf = malloc(BUFFER_SIZE + 1);
+	if (!buf)
+	{
+		free_list (list, NULL, NULL);
+		return ;
+	}
+	clean_node = malloc(sizeof(t_list));
+	if (!clean_node)
+	{
+		free (buf);
+		free_list (list, NULL, NULL);
+		return ;
+	}
+	last_node = *list;
+	while (last_node && last_node->next)
+		last_node = last_node->next;
+	update_list_helper(list, buf, last_node, clean_node);
+}
+
+char	*extract_line(t_list **list)
 {
 	int		str_len;
 	char	*next_str;
@@ -90,7 +76,7 @@ char	*extract_line(t_gnl **list)
 	return (next_str);
 }
 
-void	read_to_list(t_gnl **list, int fd)
+void	read_to_list(t_list **list, int fd)
 {
 	int		bytes_read;
 	char	*temp_buf;
@@ -120,7 +106,7 @@ void	read_to_list(t_gnl **list, int fd)
 
 char	*get_next_line(int fd)
 {
-	static t_gnl	*list;
+	static t_list	*list;
 	char			*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)

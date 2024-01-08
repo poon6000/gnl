@@ -3,31 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:36:50 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/07 19:47:05 by nsangnga         ###   ########.fr       */
+/*   Updated: 2024/01/08 19:07:23 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	contains_newline(t_gnl *list)
+int	contains_newline(t_list *list)
 {
 	char	*current_ptr;
 
-	if (list)
+	while (list)
 	{
-		current_ptr = list->content;
-		while (*current_ptr)
+		if (list->next == NULL)
 		{
-			if (*current_ptr == '\n')
-				return (1);
-			current_ptr++;
-		}
-		while (list->next)
-		{
-			list = list->next;
 			current_ptr = list->content;
 			while (*current_ptr)
 			{
@@ -36,35 +28,20 @@ int	contains_newline(t_gnl *list)
 				current_ptr++;
 			}
 		}
+		list = list->next;
 	}
 	return (0);
 }
-// {
-// 	char	*current_content;
 
-// 	if (!list)
-// 		return (0);
-// 	while (list)
-// 	{
-// 		current_content = list->content;
-// 		while (*current_content != '\0')
-// 		{
-// 			if (*current_content == '\n')
-// 				return (1);
-// 			current_content++;
-// 		}
-// 		list = list->next;
-// 	}
-// 	return (0);
-// }
-
-void	append_buffer(t_gnl **list, char *buf)
+void	append_buffer(t_list **list, char *buf)
 {
-	t_gnl	*new_node;
-	t_gnl	*last_node;
+	t_list	*new_node;
+	t_list	*last_node;
 
-	last_node = find_last_node(*list);
-	new_node = (t_gnl *)malloc(sizeof(t_gnl));
+	last_node = *list;
+	while (last_node && last_node->next)
+		last_node = last_node->next;
+	new_node = (t_list *)malloc(sizeof(t_list));
 	if (!new_node)
 	{
 		free_list(list, NULL, NULL);
@@ -79,16 +56,7 @@ void	append_buffer(t_gnl **list, char *buf)
 	new_node->next = NULL;
 }
 
-t_gnl	*find_last_node(t_gnl *list)
-{
-	if (!list)
-		return (NULL);
-	while (list->next)
-		list = list->next;
-	return (list);
-}
-
-int	length_to_newline(t_gnl *list)
+int	length_to_newline(t_list *list)
 {
 	int	total_length;
 	int	node_length;
@@ -114,7 +82,7 @@ int	length_to_newline(t_gnl *list)
 	return (total_length);
 }
 
-void	ft_copy_str(t_gnl *list, char *next_str)
+void	ft_copy_str(t_list *list, char *next_str)
 {
 	int		i;
 	int		k;
@@ -128,8 +96,6 @@ void	ft_copy_str(t_gnl *list, char *next_str)
 			if (list->content[i] == '\n')
 			{
 				next_str[k++] = '\n';
-				// next_str[k] = '\0';
-				// return ;
 				break ;
 			}
 			next_str[k++] = list->content[i++];
@@ -137,4 +103,30 @@ void	ft_copy_str(t_gnl *list, char *next_str)
 		list = list->next;
 	}
 	next_str[k] = '\0';
+}
+
+void	free_list(t_list **list, t_list *clean_node, char *buf)
+{
+	t_list	*tmp;
+
+	if (!*list || !list)
+		return ;
+	while (*list)
+	{
+		tmp = (*list)->next;
+		free((*list)->content);
+		free(*list);
+		*list = tmp;
+	}
+	if (clean_node)
+	{
+		*list = NULL;
+		if (clean_node->content[0])
+			*list = clean_node;
+		else
+		{
+			free(buf);
+			free(clean_node);
+		}
+	}
 }

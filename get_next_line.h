@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:18 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/07 19:27:01 by nsangnga         ###   ########.fr       */
+/*   Updated: 2024/01/08 18:49:59 by intrauser        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,23 @@
 #  define BUFFER_SIZE 42
 # endif
 
-typedef struct s_gnl
+typedef struct s_list
 {
 	char			*content;
-	struct s_gnl	*next;
-}	t_gnl;
+	struct s_list	*next;
+}	t_list;
 
 // Function prototypes for get_next_line.c
 char	*get_next_line(int fd);
-void	read_to_list(t_gnl **list, int fd);
-char	*extract_line(t_gnl **list);
-void	update_list(t_gnl **list);
-void	free_list(t_gnl **list, t_gnl *clean_node, char *buf);
-
+void	read_to_list(t_list **list, int fd);
+char	*extract_line(t_list **list);
+void	update_list(t_list **list);
+void	update_list_helper(t_list **list, char *buf, t_list *last_node, \
+t_list *clean_node);
 // Utility function prototypes for get_next_line_utils.c
-int		contains_newline(t_gnl *list);
-void	append_buffer(t_gnl **list, char *buf);
-t_gnl	*find_last_node(t_gnl *list);
-// void	process_leftover_chars(t_gnl *last_node, char *buf);
-int		length_to_newline(t_gnl *list);
-void	ft_copy_str(t_gnl *list, char *next_str);
-
+int		contains_newline(t_list *list);
+void	append_buffer(t_list **list, char *buf);
+int		length_to_newline(t_list *list);
+void	ft_copy_str(t_list *list, char *next_str);
+void	free_list(t_list **list, t_list *clean_node, char *buf);
 #endif
