@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
+/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:36:50 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/08 20:15:04 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/14 13:27:24 by nsangnga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	contains_newline(t_list *list)
 	return (0);
 }
 
-void	append_buffer(t_list **list, char *buf)
+void	append_buffer(t_list **list, char *temp_buf)
 {
 	t_list	*new_node;
 	t_list	*last_node;
@@ -42,10 +42,10 @@ void	append_buffer(t_list **list, char *buf)
 	if (!new_node)
 	{
 		free_list(list, NULL, NULL);
-		free (buf);
+		free (temp_buf);
 		return ;
 	}
-	new_node->content = buf;
+	new_node->content = temp_buf;
 	new_node->next = NULL;
 	if (!*list)
 		*list = new_node;

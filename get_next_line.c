@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
+/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:03 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/08 20:14:12 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/14 12:11:23 by nsangnga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,6 @@ void	read_to_list(t_list **list, int fd)
 		append_buffer(list, temp_buf);
 	}
 }
-		// if temp_buf have newline
-		// break ;
 
 char	*get_next_line(int fd)
 {

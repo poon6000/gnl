@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
+/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 15:18:22 by intrauser         #+#    #+#             */
-/*   Updated: 2024/01/08 20:17:11 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/14 15:57:24 by nsangnga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,68 @@
 #include <fcntl.h>  // For open()
 #include <unistd.h> // For read()
 
-int	main(void) 
+int	main(int argc, char **argv)
 {
-	char	*line;
-	int		fd = open("test.txt", O_RDONLY);
+    int fd;
+    char *line;
 
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		printf("%s", line);
-		free(line);
-	}
-	close(fd);
-	return (0);
+    // Check if a file name is provided
+    if (argc != 2)
+    {
+        printf("Usage: %s test.txt\n", argv[0]);
+        return (1);
+    }
+
+    // Open the file
+    fd = open(argv[1], O_RDONLY);
+    if (fd == -1)
+    {
+        perror("Error opening file");
+        return (1);
+    }
+
+    // Read lines from the file and print them
+    while ((line = get_next_line(fd)) != NULL)
+    {
+        printf("%s", line);
+        free(line); // Free the line after printing
+    }
+
+    // Close the file
+    close(fd);
+    return (0);
 }
+// int	main(void) 
+// {
+// 	char	*line;
+// 	int		fd;
+
+// 	fd = open("test.txt", O_RDONLY);
+// 	while ((line = get_next_line(fd)) != NULL)
+// 	{
+// 		printf("%s", line);
+// 		free(line);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
+
+// int	main(void)
+// {
+// 	char	*line;
+// 	int		fd;
+
+// 	fd = open("test.txt", O_RDONLY);
+// 	line = get_next_line(fd);
+// 	while (line != NULL)
+// 	{
+// 		printf("%s", line);
+// 		free(line);
+// 		line = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
 
 //check append_buffer function
 // int main()

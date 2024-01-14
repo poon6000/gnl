@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: intrauser <intrauser@student.42bangkok.    +#+  +:+       +#+        */
+/*   By: nsangnga <nsangnga@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 13:37:18 by nsangnga          #+#    #+#             */
-/*   Updated: 2024/01/08 20:17:37 by intrauser        ###   ########.fr       */
+/*   Updated: 2024/01/14 14:24:37 by nsangnga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
